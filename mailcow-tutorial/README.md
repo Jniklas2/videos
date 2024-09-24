@@ -14,6 +14,7 @@ Video: https://www.youtube.com/watch?v=4rzc0hWRSPg
 
 - Linux Server running Ubuntu 20.04 LTS or newer
 - Don't use `sudo` because it will break things inside mailcow
+- Verify you're using root with the `umask` of `0022`
 
 You can still install mailcow on a Linux Server that is not running Ubuntu, however, this may require different commands!
 
@@ -47,8 +48,6 @@ docker run hello-world
 ```
 
 ### 1.3. Install Docker Compose
-
-
 ```bash
 apt install docker-compose-plugin
 ```
@@ -66,6 +65,7 @@ You can also use your personal home folder `/home/<your-username>`, this may req
 
 ```
 git clone https://github.com/mailcow/mailcow-dockerized
+cd mailcow-dockerized
 ```
 
 ## 2.1. Generate your configuration file and follow the steps in the script.
