@@ -4,60 +4,58 @@ Mail Server Linux Installation in 10 minutes? Here, you will learn step-by-step 
 
 We will use the free and open-source project **Mailcow Dockerized** which is a fully featured mail server powered by Docker.
 
-Project Homepage: https://mailcow.email/
-Project Source: https://github.com/mailcow/mailcow-dockerized
-Documentation: https://mailcow.github.io/mailcow-dockerized-docs/
+- Project Homepage: https://mailcow.email/
+- Project Source: https://github.com/mailcow/mailcow-dockerized
+- Documentation: https://mailcow.github.io/mailcow-dockerized-docs/
 
 Video: https://www.youtube.com/watch?v=4rzc0hWRSPg
 
 ## Prerequisites
 
-- Linux Server running Ubuntu 18.04 LTS or newer
+- Linux Server running Ubuntu 20.04 LTS or newer
+- Don't use `sudo` because it will break things inside mailcow
 
 You can still install mailcow on a Linux Server that is not running Ubuntu, however, this may require different commands!
 
-## 1. Install Docker, and Docker-Compose
+## 1. Install Docker, and Docker Compose
 
 You can still install Docker on a Linux Server that is not running Ubuntu, however, this may require different commands!
 
 ### 1.1. Install Docker
+Add Docker's official GPG key:
 ```bash
-sudo apt update
+apt update
+apt install ca-certificates curl
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+```
 
-sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-sudo apt update
-
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+Add the repository to Apt sources:
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  \
+  $(lsb_release --codename --short) stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
 ```
 
 ### 1.2. Check if Docker is installed correctly
 ```bash
-sudo docker run hello-world
+docker version
+docker run hello-world
 ```
 
-### 1.3. Install Docker-Compose
+### 1.3. Install Docker Compose
 
-Download the latest version (in this case it is 1.25.5, this may change whenever you read this tutorial!)
 
 ```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-sudo chmod +x /usr/local/bin/docker-compose
+apt install docker-compose-plugin
 ```
 
 ### 1.4. Check if Docker-Compose is installed correctly
 ```bash
-sudo docker-compose --version
-```
-
-### 1.5. (optional) Add your linux user to the `docker` group
-```bash
-sudo usermod -aG docker $USER
+sudo docker compose --version
 ```
 
 ## 2. Install mailcow-dockerized
@@ -67,13 +65,13 @@ Clone mailcow into the `/opt` folder.
 You can also use your personal home folder `/home/<your-username>`, this may require different permissions.
 
 ```
-sudo git clone https://github.com/mailcow/mailcow-dockerized
+git clone https://github.com/mailcow/mailcow-dockerized
 ```
 
 ## 2.1. Generate your configuration file and follow the steps in the script.
 
 ```
-sudo ./generate_config.sh
+./generate_config.sh
 ```
 
 ## 2.2. Enter your mailserver FQDN (this is your mailserver hostname, not your domain name)
@@ -91,7 +89,7 @@ SKIP_LETS_ENCRYPT=y
 ## 2.5. Start mailcow
 
 ```
-sudo docker-compose up -d
+docker-compose up -d
 ```
 
 ## 2.6. Login to mailcow
